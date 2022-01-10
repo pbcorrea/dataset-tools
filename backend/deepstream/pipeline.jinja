@@ -1,0 +1,23 @@
+filesrc
+  location={{ image_file_src }}
+! rtph265depay 
+! h265parse 
+! queue
+! avdec_h265
+! nvvideoconvert
+! video/x-raw(memory:NVMM),format=NV12
+! nvmuxer.sink_0
+nvstreammux
+  name=nvmuxer
+  width={{ image_width }}
+  height={{ image_height }}
+  batch-size=1
+  batched-push-timeout=66666
+  nvbuf-memory-type=0
+! nvinfer
+  config-file-path={{ nvinfer_config_file }}
+  batch-size=1
+! tee name=osd_tee
+osd_tee.
+! queue
+! fakesink
